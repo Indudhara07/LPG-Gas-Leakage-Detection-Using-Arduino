@@ -1,0 +1,77 @@
+#include <Wire.h>
+#include <SoftwareSerial.h>
+SoftwareSerial myser(8, 9);
+
+#include <Servo.h>
+Servo myservo;
+
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+int gas = A0;
+int buzz = 2;
+int f1 = 3;
+int f2 = 4;
+
+void setup() {
+  Serial.begin(9600);
+  myser.begin(9600);
+
+  pinMode(buzz, OUTPUT);
+  pinMode(f1, OUTPUT);
+  pinMode(f2, OUTPUT);
+
+  myservo.attach(6);
+  myservo.write(0);
+
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+}
+
+void loop() {
+  int gasv = analogRead(gas);
+  Serial.println(gasv);
+
+  if (gasv > 300) {
+    digitalWrite(f1, HIGH);
+    digitalWrite(f2, LOW);
+    digitalWrite(buzz, HIGH);
+
+    myservo.write(90);
+
+    lcd.clear();
+    lcd.print("GasLeak Detected");
+    lcd.setCursor(0, 1);
+    lcd.print("Value:");
+    lcd.print(gasv);
+
+    delay(2000);
+    digitalWrite(buzz, LOW);
+
+    msg1();
+  } else {
+    digitalWrite(f1, LOW);
+    digitalWrite(f2, LOW);
+
+    lcd.clear();
+    lcd.print("NoGasLeak Detected");
+
+    myservo.write(0);
+    delay(1000);
+  }
+}
+
+void msg1() {
+  myser.println("AT+CMGF=1");    // Set SMS text mode
+  delay(1000);
+
+  myser.println("AT+CMGS=\"8296446188\""); // Replace with your phone number
+  delay(1000);
+
+  myser.print("Gas Leak Detected");
+  delay(1000);
+
+  myser.write(26);  // Ctrl+Z to send SMS
+  delay(1000);
+}
