@@ -1,5 +1,6 @@
 # LPG-Gas-Leakage-Detection-Using-Arduino
-The project "LPG gas leakage detection using Arduino" was made in third year of engineering.
+The project "LPG gas leakage detection using Arduino" was made engineering.
+<br>
 This project proposes a microcontroller-based LPG Gas Leakage Detection System 
 using Arduino, MQ-6 Gas Sensor, and GSM Module, designed to detect leakage at the earliest 
 possible stage. When the MQ-6 sensor senses an abnormally high concentration of LPG in the air, 
